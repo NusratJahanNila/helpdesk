@@ -1,6 +1,7 @@
-import { Controller,Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller,Get, Param, ParseIntPipe, Post, Query, Body } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
-import { Ticket } from './ticket.interface';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { FilterTicketsQueryDto } from './dto/filter-tickets-query.dto';
 
 @Controller('tickets') // Define the route prefix for this controller
 
@@ -15,13 +16,18 @@ export class TicketsController {
 
 
     @Get()
-    findAll(@Query('status') status?: Ticket['status'], @Query('priority') priority?: Ticket['priority']) {
-        return this.ticketsService.findAll(status, priority);
+    findAll(@Query() filters: FilterTicketsQueryDto) {
+        return this.ticketsService.findAll(filters.status, filters.priority);
     }
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number){
         return this.ticketsService.findOne(id);
+    }
+
+    @Post()
+    create(@Body() createTicketDto: CreateTicketDto) {
+        return this.ticketsService.create(createTicketDto);
     }
 }
 
