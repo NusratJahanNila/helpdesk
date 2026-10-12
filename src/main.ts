@@ -8,6 +8,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api'); // Set a global prefix for all routes
 
+  // Redirect the root URL to the tickets API instead of returning 404
+  app.getHttpAdapter().get('/', (_req, res) => res.redirect('/api/tickets'));
+
 
   // Validate request bodies against DTOs
   app.useGlobalPipes(new ValidationPipe({ 
