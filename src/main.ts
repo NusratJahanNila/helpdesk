@@ -2,6 +2,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ResponseInterceptor } from './common/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,8 @@ async function bootstrap() {
     whitelist: true,                       // do not allow properties that are not in the DTO
     forbidNonWhitelisted: true            // throw an error if non-whitelisted properties are present
   }));
+
+  app.useGlobalInterceptors(new ResponseInterceptor()); // Apply the response interceptor globally
 
   await app.listen(process.env.PORT ?? 3000);
 }
