@@ -1,8 +1,9 @@
-import { Controller,Get, Param, ParseIntPipe, Post, Query, Body, Patch } from '@nestjs/common';
+import { Controller,Get, Param, ParseIntPipe, Post, Query, Body, Patch, UseGuards } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { FilterTicketsQueryDto } from './dto/filter-tickets-query.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { StaffGuard } from './guards/staff.guard';
 
 @Controller('tickets') // Define the route prefix for this controller
 
@@ -39,6 +40,8 @@ export class TicketsController {
         return this.ticketsService.update(id, updateTicketDto);
     }
 
+    // to use the staff key
+    @UseGuards(StaffGuard)
     // Close a ticket by id
     @Patch(':id/close')
     closeTicket(@Param('id', ParseIntPipe) id: number) {
