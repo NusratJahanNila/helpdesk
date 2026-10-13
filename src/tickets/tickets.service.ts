@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Ticket } from './ticket.interface';
-import { create } from 'domain';
 import { CreateTicketDto } from './dto/create-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @Injectable()
 export class TicketsService {
@@ -63,18 +63,29 @@ export class TicketsService {
 
     // Post a new ticket
 
-create (createTicketDto: CreateTicketDto){
-    const newTicket: Ticket = {
-        id: this.nextTicketId++,
-        subject: createTicketDto.subject,
-        description: createTicketDto.description,
-        priority: createTicketDto.priority,
-        status: "open",
-        createdAt: new Date().toISOString()
-    };
-    this.tickets.push(newTicket);
-    return newTicket;
-}
+    create (createTicketDto: CreateTicketDto){
+        const newTicket: Ticket = {
+            id: this.nextTicketId++,
+            subject: createTicketDto.subject,
+            description: createTicketDto.description,
+            priority: createTicketDto.priority,
+            status: "open",
+            createdAt: new Date().toISOString()
+        };
+        this.tickets.push(newTicket);
+        return newTicket;
+    }
+
+    // Update an existing ticket by id, throws NotFoundException if not found
+    update(id: number, updateTicketDto: UpdateTicketDto) {
+        const updateTicket = this.findOne(id);
+
+        if (updateTicket.status === "closed") {
+            throw new BadRequestException(`Ticket with id ${id} is closed and cannot be updated`);
+        }
+        Object.assign(updateTicket, updateTicketDto);
+        return updateTicket;
+    }
 }   
 
 

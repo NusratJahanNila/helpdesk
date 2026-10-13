@@ -1,7 +1,8 @@
-import { Controller,Get, Param, ParseIntPipe, Post, Query, Body } from '@nestjs/common';
+import { Controller,Get, Param, ParseIntPipe, Post, Query, Body, Patch } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { FilterTicketsQueryDto } from './dto/filter-tickets-query.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @Controller('tickets') // Define the route prefix for this controller
 
@@ -29,6 +30,13 @@ export class TicketsController {
     create(@Body() createTicketDto: CreateTicketDto) {
         return this.ticketsService.create(createTicketDto);
     }
+
+    @Patch(':id')
+    update(
+        @Param('id', ParseIntPipe) id: number,
+        @Body() updateTicketDto: UpdateTicketDto
+    ) {
+        return this.ticketsService.update(id, updateTicketDto);
+    }
+
 }
-
-
